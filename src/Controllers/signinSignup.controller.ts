@@ -153,7 +153,7 @@ const verifyByOrganization = async (req: Request, res: Response) => {
       const emailStatus = await sendMailwhenPending(
         ["rajendrayadav900500@gmail.com"]
       );
-      console.log("pending Account", status)
+      res.status(200).send({msg:"account has been pending"})
     }
   })
 }
@@ -221,17 +221,17 @@ const userActivate_DeActivate_Controller = async (req: Request, res: Response, n
 }
 
 const adminData = async (req: Request, res: Response) => {
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>>", req.body)
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>", req.body.email)
 
-  const { email } = req.body
+  const email  = req.body.email
   console.log(email)
   // const data=JSON.parse(email);
-  userModel.findOne({ email }, (err: any, result: any) => {
+  userModel.findOne({ email:email }, (err: any, result: any) => {
     if (err) {
-      console.log(err)
+      console.log("errrrrrrrrrr admin",err)
     }
     if (result) {
-      res.status(200).send(res)
+      res.status(200).send(result)
     }
   })
 }

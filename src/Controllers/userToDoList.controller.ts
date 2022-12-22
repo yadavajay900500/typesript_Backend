@@ -1,18 +1,39 @@
 import { NextFunction, Request, Response } from "express";
-import userModel from '../Models/signinSigup.model'
+import { Result } from "express-validator";
+import userModel from '../Models/signinSigup.model';
 
-const addToDoListAdd = (req: Request, res: Response, next: NextFunction) => {
+
+
+const getAlltasks = async(req: Request, res: Response, next: NextFunction) =>{
+    try{
+         const email = req.query.email
+         const result = await userModel.find({email:email})
+         if(result){
+            // console.log("result1111111111111111111111111111111",result[0].toDaData)
+            res.status(200).send(result[0].toDaData)
+         }
+
+     }
+    catch(err){
+        res.status(404).send(err)
+    }
+}
+
+
+
+
+const addToDoListAdd = async(req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log("++++++++++++++++",req.body)
+        // console.log("++++++++++++++++",req.body)
         const { email, work} = req.body
         console.log(req.body.work)
-        userModel.findOneAndUpdate(email,
+         userModel.findOneAndUpdate({email:email},
             { "$push": { "toDaData": req.body.work} },
             { "new": true, "upsert": true },
             function (err, result) {
                 if (err) throw err;
-                console.log("))))))))))))))))))))",result);
-                res.status(200).send("to do List add Successfully")
+                // console.log("))))))))))))))))))))",result);
+                res.status(200).send(result)
             }
         );
         // console.log("Account is Successfully updated")
@@ -45,16 +66,15 @@ const addToDoListAdd = (req: Request, res: Response, next: NextFunction) => {
 
 const addToDoListRemove = (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body.toDoData)
+        console.log(req.body)
         const { email, toDaData,index} = req.body
-        console.log(req.body.toDoData)
-        userModel.findOneAndUpdate(email,
-            { "$pull": { "toDaData": req.body.toDoData} },
-            { "new": true, "upsert": true },
-            function (err, result) {
+        // console.log(req.body.toDaData)
+        userModel.findOneAndUpdate({email:email},
+            { "$pull": { "toDaData": req.body.toDaData} },
+            function (err:any, result:any) {
                 if (err) throw err;
-                console.log("))))))))))))))))))))",result);
-                res.status(200).send("to do List add Successfully")
+                // console.log("))))))))))))))))))))",result);
+                res.status(200).send(result)
             }
         );
         // userModel.findOne({ email }, async (err: any, result: {
@@ -88,32 +108,32 @@ const addToDoListRemove = (req: Request, res: Response, next: NextFunction) => {
 
 
 }
-const addToDoListUpdate = (req: Request, res: Response, next: NextFunction) => {
-    try {
+const addToDoListUpdate = async(req: Request, res: Response, next: NextFunction) => {
+    try{
         const { email, toDaData,index} = req.body
-        console.log(req.body.toDoData)
+        console.log("inside update",req.body)
        
-        userModel.findOne({ email }, async (err: any, result: {
-            toDaData: any; _id: any;
-        }) => {
-            if (err) {
-                next(err)
-            }
-            if (result) {
-                const toDoList = result.toDaData
-                          if(index>-1){
-                    toDoList.splice(index,1)
+        const result = await userModel.find({ email:req.body.email}) 
+        console.log("id result",result[0]._id)
+        console.log(result[0].toDaData)
+       
+             if (result) {
+                 
+              const resu =   result[0].toDaData.indexOf(index)
+              result[0].toDaData.splice(resu,1,toDaData)
+             
                 }
-                // toDoList.push(req.body.toDoData)
-              
-                console.log("Account is Successfully updated")
-                res?.status(200).send({ msg: "You has been successfully upadted", data: result });
-            }
-        })
-    } catch (err) {
-        console.log(err)
+                console.log("btao",result[0].toDaData)
+                //  toDoList.push(req.body.toDaData)
+            const finalResult = await userModel.findByIdAndUpdate(result[0]._id,{toDaData:result[0].toDaData},{new:true})
+                 console.log("finalResult")
+                res.status(200).send(finalResult);
+        }
+    
+     catch (err) {
+        res.send({msg:"no data to update"})
     }
 
 }
 
-export { addToDoListAdd, addToDoListUpdate, addToDoListRemove }
+export { addToDoListAdd, addToDoListUpdate, addToDoListRemove,getAlltasks }

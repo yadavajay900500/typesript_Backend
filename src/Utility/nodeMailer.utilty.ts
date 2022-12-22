@@ -70,7 +70,7 @@ import {google} from 'googleapis'
 const CLIENT_ID = '630668604540-9gelb99035e2urd5mkogu2iifomhg3li.apps.googleusercontent.com'
 const CLIENT_SECRET = "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"
 const REDIRECT_URI ='https://developers.google.com/oauthplayground'
-const REFRESH_TOKEN= "1//04V8J9yloPvbFCgYIARAAGAQSNwF-L9IryBz4snmaMSm9_pDXGQXUP6Po8FiVSza2HcSaA1b4mduIEKbALcLtRmWG7FWr1dUez9M"
+const REFRESH_TOKEN= "1//04bmWrNIaPU56CgYIARAAGAQSNwF-L9IrxreOeS8ifU-IiyluREGH9ZSgfR2saeO1ZjXuo-ukCpXrFLSafpKFfNmxyq5dNQxHqf4"
 
 
 
@@ -78,7 +78,7 @@ const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,  CLIENT_SECRET, REDIRECT_
 oAuth2Client.setCredentials({ refresh_token : REFRESH_TOKEN })
 
 
-const accessToken = 'ya29.a0AeTM1idF7LjB88Bs92Muv65t1-ctKepZag4B-3R1zALR63eKQ5pRsL3pRqlE9QuUVmOuUOpwQejXi19M2kRUm1N4hp94A_ehFaUR5P2q_Ggae6rByTVxwvK0zB0VhNz44vNQZsgFiJigMxXIA8usDuZv685aaCgYKAcYSARASFQHWtWOmw8hPkH0DxE7NEN3uzR9U-g0163'
+const accessToken = 'ya29.a0AX9GBdWdhUkUE0ZMJI_uEoZeibG0bEnutXMz66MC4zssw-7Cxe8LLfJS0yvv-wQM3wd-tiekvVGRHbc1pYatkJR-e53Nvrlq3P0uxFMdZM6cxephByT2bRfEGKlFtNSeuo-RnTKbjSdWuAF9oXsnkB4R8o0waCgYKAeUSARASFQHUCsbCctypKwCViyXiLUaw3GBRuQ0163'
 
 
 const transporter = nodemailer.createTransport({
@@ -90,8 +90,8 @@ const transporter = nodemailer.createTransport({
         user:'jitendra7518888@gmail.com',
         clientId :'630668604540-9gelb99035e2urd5mkogu2iifomhg3li.apps.googleusercontent.com',
         clientSecret : "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",
-        refreshToken: "1//04V8J9yloPvbFCgYIARAAGAQSNwF-L9IryBz4snmaMSm9_pDXGQXUP6Po8FiVSza2HcSaA1b4mduIEKbALcLtRmWG7FWr1dUez9M",
-        accessToken:'ya29.a0AeTM1idF7LjB88Bs92Muv65t1-ctKepZag4B-3R1zALR63eKQ5pRsL3pRqlE9QuUVmOuUOpwQejXi19M2kRUm1N4hp94A_ehFaUR5P2q_Ggae6rByTVxwvK0zB0VhNz44vNQZsgFiJigMxXIA8usDuZv685aaCgYKAcYSARASFQHWtWOmw8hPkH0DxE7NEN3uzR9U-g0163',
+        refreshToken: "1//04bmWrNIaPU56CgYIARAAGAQSNwF-L9IrxreOeS8ifU-IiyluREGH9ZSgfR2saeO1ZjXuo-ukCpXrFLSafpKFfNmxyq5dNQxHqf4",
+        accessToken:'ya29.a0AX9GBdWdhUkUE0ZMJI_uEoZeibG0bEnutXMz66MC4zssw-7Cxe8LLfJS0yvv-wQM3wd-tiekvVGRHbc1pYatkJR-e53Nvrlq3P0uxFMdZM6cxephByT2bRfEGKlFtNSeuo-RnTKbjSdWuAF9oXsnkB4R8o0waCgYKAeUSARASFQHUCsbCctypKwCViyXiLUaw3GBRuQ0163',
 
     }, 
 })
