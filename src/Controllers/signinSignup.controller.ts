@@ -6,7 +6,7 @@ import { sendMailTo, sendMailwhenPending, sendMailWhenRejected } from "../Utilit
 const saltRounds: number = 2;
 
 const signup = async (req: Request, res: Response) => {
-  try {
+  
       
     const { email, password } = req.body
     const hass = await bcrypt.hash(password, saltRounds);
@@ -36,17 +36,11 @@ const signup = async (req: Request, res: Response) => {
       res.status(200).send({ msg: "Successfully Signup" })
     }
   }
-  catch (err) {
-
-    res.status(500).send(err);
-
-  }
-  
-};
+ 
 
 
 const signin = async (req: Request, res: Response) => {
-  try {
+  
     const email = req.body.email
 
 
@@ -77,15 +71,11 @@ const signin = async (req: Request, res: Response) => {
     }
     else {
 
-      res.status(403).send("Data not Found")
+      res.status(404).send("user not found")
     }
   }
 
-  catch (err) {
-
-    res.status(403).send("Something Wrong")
-  }
-}
+ 
 
 const verifyUserEmail = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -174,7 +164,7 @@ const verifyByOrganization = async (req: Request, res: Response) => {
 
 
 const newCustomerApplication = async (req: Request, res: Response) => {
-  try {
+  
    const data =  await userModel.find({ status: "none" })
      if(data){
       res.status(200).send(data)
@@ -184,11 +174,8 @@ const newCustomerApplication = async (req: Request, res: Response) => {
      }
     
 
-  } catch (err) {
-    console.log(err)
-    res.status(403).send("User Does not Exits")
   }
-}
+
 
 const allApprovedUser = async (req: Request, res: Response) => {
 
