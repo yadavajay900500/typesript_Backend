@@ -10,19 +10,19 @@ interface IUser extends Document {
     token: string;
     refreshToken:string;
     toDaData:Array<string>;
-    status:String;
+    status:string;
 
     action: {
         status: {
-           type: String,
+           type:string,
            //default:[],
         },
         statusBy: {
-           type: String,
+           type: string,
            //default: [],
         },
         role: {
-           type: String,
+           type: string,
            //   required:true,
   
         }
@@ -32,10 +32,13 @@ interface IUser extends Document {
 		enum: Array<string>,
 		default: Array<string>,
 	},
+    market:Array<string>,
+    role:Array<string>
+    
 };
 
 const User: Schema = new mongoose.Schema({
-    fullname: {
+    name: {
         type: String,
         required: true,
     },
@@ -67,6 +70,14 @@ const User: Schema = new mongoose.Schema({
     },
     toDaData:{
         type:Array
+    },
+    market:{
+        type:Array,
+        required:true
+    },
+    role:{
+       type:Array,
+       required:true
     },
     action: {
         status: {

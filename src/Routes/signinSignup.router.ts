@@ -1,12 +1,12 @@
 
 import { Router } from "express";
-import { SignIn, signup, 
+import { signin, signup, 
     verifyUserEmail ,
     verifyByOrganization,
     newCustomerApplication,
     allApprovedUser,
     adminData,
-    userActivate_DeActivate_Controller
+    userActivateDeActivateController
 } from "../Controllers/signinSignup.controller";
 import { resultValidator } from "../Middleare/globalMiddleware";
 import { token_parser,requestAuthentication } from "../Utility/token";
@@ -21,18 +21,18 @@ const SignInSignUpRoute = Router();
 
 function postRequest(){
     SignInSignUpRoute.post("/signUp",signupValidator(),resultValidator,signup);
-    SignInSignUpRoute.post("/signIn",SignIn)
+    SignInSignUpRoute.post("/signIn",signin)
     SignInSignUpRoute.post("/adminData",adminData)
 }
 
 function patchRequest(){
     SignInSignUpRoute.patch("/verifyAccount", verifyByOrganization)
-    SignInSignUpRoute.patch("/updateStatus",requestAuthentication,userActivate_DeActivate_Controller)
+    SignInSignUpRoute.patch("/updateStatus",requestAuthentication,userActivateDeActivateController)
 
 }
 
 function getRequest(){
-    SignInSignUpRoute.get("/newUserApplication",requestAuthentication,newCustomerApplication);
+    SignInSignUpRoute.get("/newUserApplication",newCustomerApplication);
     SignInSignUpRoute.get("/allApplication",requestAuthentication,allApprovedUser);
     SignInSignUpRoute.get("/verifyEmail",token_parser,verifyUserEmail)
 }

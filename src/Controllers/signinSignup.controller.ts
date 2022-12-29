@@ -7,171 +7,183 @@ const saltRounds: number = 2;
 
 const signup = async (req: Request, res: Response) => {
   try {
-    console.log("++++++++++++++++++++++++", req.body)
+      
     const { email, password } = req.body
     const hass = await bcrypt.hash(password, saltRounds);
     const TOKEN: string = generateToken(email, `${60 * 15}s`)
-    console.log(TOKEN)
+
 
     const emailLink = `http://localhost:5050/verifyEmail?token=${TOKEN}`;
-    const emailStatus = await sendMailTo(
-      ["rajendrayadav900500@gmail.com"],
-      emailLink
-    );
+   
     const user = new userModel({
-      fullname: req.body.fullname,
+      name: req.body.name,
       email: email,
       password: hass,
-      token: TOKEN
+      token: TOKEN,
+      market: req.body.market,
+      role: req.body.role
     });
-    console.log("QQQQQQQQQQ", user)
-    user.save(async (err) => {
-      if (err) {
-        console.log(err)
-        res.status(500).send({ message: err });
-        return;
-      };
+
+    const data = await user.save()
+    if (!data) {
+      res.status(500).send({ message: "some error occured" });
+    }
+    else {
+      const emailStatus = await sendMailTo(
+        ["rajendrayadav900500@gmail.com", "jvishwakarma@kloudrac.com"],
+        emailLink
+      );
       res.status(200).send({ msg: "Successfully Signup" })
-    })
-  } catch (err) {
-    console.log("Someting Wrong", err)
-    res.status(403).json("Signup Failed!");
+    }
+  }
+  catch (err) {
+
+    res.status(500).send(err);
 
   }
-  // res.status(200).json("Successfull Signup");
+  
 };
 
 
-const SignIn = (req: Request, res: Response) => {
+const signin = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body
-    const refToken: string = refreshToken({ email }, `${60 * 15}s`)
-    const userData = userModel.findOneAndUpdate({ email: email }, { refreshToken: refToken }, async (err: Error, result: any) => {
-      if (result) {
-        const { roles } = result
-
-        const match_pass = await bcrypt.compare(req.body.password, result.password)
-        if (match_pass) {
-          console.log("++++++)0000000000++++", result)
-
-          console.log("?????????////", roles)
-          const TOKEN: string = generateToken({ email, roles }, `${60 * 150}s`)
-          console.log("$$$$$$$$$$$$4", TOKEN)
-          res.status(200).send({
-            msg: "User logIn Successfull", userData: {
-              TOKEN: TOKEN,
-              refreshToken: refToken,
-              id: result._id,
-              name: result.fullname
-            }
-          })
-        } else {
+    const email = req.body.email
 
 
-          res.status(401).send("Wrong Password")
-        }
+    const result = await userModel.findOne({ email: email })
+
+    // console.log(".............................................",hashPassword)
+    if (result) {
+      const hashPassword = result?.password as string
+      const roles = result?.roles
+
+
+      const match_pass = await bcrypt.compare(req.body.password, hashPassword)
+      if (match_pass) {
+        const TOKEN: string = generateToken({ email, roles }, `${60 * 15}s`)
+
+        res.status(200).send({
+          msg: "User logIn Successfull", userData: {
+            TOKEN: TOKEN,
+
+
+          }
+        })
+      } else {
+
+
+        res.status(401).send("Wrong Password")
       }
-      if (err) {
-        console.log(err)
-        res.status(403).send("Data not Found")
-      }
-    })
+    }
+    else {
+
+      res.status(403).send("Data not Found")
+    }
   }
+
   catch (err) {
-    console.log(err)
+
     res.status(403).send("Something Wrong")
   }
 }
 
-const verifyUserEmail = (req: Request, res: Response, next: NextFunction) => {
-  console.log("req.body", req.query)
+const verifyUserEmail = async (req: Request, res: Response, next: NextFunction) => {
+
   // const data:string = req.query.token as string;
   const { data } = req.body.token
-  console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaa", data)
-  userModel.findOne({ email: data }, async (err: any, result: any) => {
-    if (err) {
-      next(err);
-    }
-    else {
-      if (result) {
-        console.log("+++++++++++++++", result)
-        const updateAccount = await userModel.findOneAndUpdate(
-          { email: data },
-          { emailVerified: 1 },
-          { new: true }
-        );
-        res.send({ status: "Account Verified", updateAccount });
 
-      } else {
-        res.send({ status: "Invalid Url" });
+  const result = await userModel.findOne({ email: data })
 
-      }
-    }
-  });
+  if (result) {
 
-};
+    const updateAccount = await userModel.updateOne(
+      { email: data },
+      { emailVerified: 1 },
+      { new: true }
+    );
+    res.send({ status: "Account Verified", updateAccount });
+
+  } else {
+    res.send({ status: "Invalid Url" });
+
+  }
+}
+
+
+
 
 const verifyByOrganization = async (req: Request, res: Response) => {
-  console.log("???", req.body)
+
   const { _id } = req.body;
   const { statusBy, role, status } = req.body.action
-  const detail = await userModel.findOneAndUpdate({ _id }, {
-    $set: {
-      action: {
-        role: role,
-        status: status,
-        statusBy: statusBy
-      },
-    }
-  }, { new: true })
-  detail?.save(async (err, result) => {
-    if (status == "Approved") {
-      if (result) {
-        // await userModel.updateOne({ _id }, {}, { new: true })
-        const emailLink = `${""}`;
-        // *********<this function is used for sending email>************//
-        const emailStatus = await sendMailTo(
-          ["rajendrayadav900500@gmail.com"],
-          emailLink
-        );
-        res.status(200).send({ msg: "approved succesfully" })
-      } else {
-        res.status(400).send(err)
+
+
+  if (status == "Approved") {
+    const detail = await userModel.findOneAndUpdate({ _id }, {
+      $set: {
+        action: {
+          role: role,
+          status: status,
+          statusBy: statusBy
+        },
       }
-    }
-    console.log("!!!!!!!!!!!!!!!!!!!!!")
-    if (status == "Rejected") {
-      const emailStatus = await sendMailWhenRejected(
-        ["rajendrayadav900500@gmail.com"]
-      );
-      console.log("rejected Account", status)
-      res.status(200).send({ msg: "rejected Account" })
+    }, { new: true })
 
+    if (detail) {
+      
+      const emailLink = `${""}`;
+      const emailStatus = await sendMailTo(
+        ["rajendrayadav900500@gmail.com"],
+        emailLink
+      );
+      res.status(200).send({ msg: "approved succesfully" })
+    }
+  }
+
+  if (status == "Rejected") {
+    const detail = await userModel.findOneAndUpdate({ _id }, {
+      $set: {
+        action: {
+          role: role,
+          status: status,
+          statusBy: statusBy
+        },
+      }
+    }, { new: true })
+
+    const emailStatus = await sendMailWhenRejected(["rajendrayadav900500@gmail.com"]);
+     res.status(200).send({ msg: "rejected Account" })
     }
 
-    if (status == "Pending") {
-      const emailStatus = await sendMailwhenPending(
-        ["rajendrayadav900500@gmail.com"]
-      );
-      res.status(200).send({msg:"account has been pending"})
-    }
-  })
+  if (status == "Pending") {
+    const detail = await userModel.findOneAndUpdate({ _id }, {
+      $set: {
+        action: {
+          role: role,
+          status: status,
+          statusBy: statusBy
+        },
+      }
+    }, { new: true })
+
+    const emailStatus = await sendMailwhenPending(["rajendrayadav900500@gmail.com"]);
+    res.status(200).send({ msg: "account has been pending" })
+  }
 }
+
 
 
 const newCustomerApplication = async (req: Request, res: Response) => {
   try {
-    await userModel.find({}).then((data) => {
-      function customerData(b: any) {
-        const a = b.emailVerified
-        return a == 1;
-      }
-      const newcustomer = data.filter(customerData);
-      if (newcustomer) {
-        res.status(200).send({ data: newcustomer })
-      }
-    })
+   const data =  await userModel.find({ status: "none" })
+     if(data){
+      res.status(200).send(data)
+     }
+     else{
+      res.status(500).send({msg:"something went wrong"})
+     }
     
+
   } catch (err) {
     console.log(err)
     res.status(403).send("User Does not Exits")
@@ -179,31 +191,24 @@ const newCustomerApplication = async (req: Request, res: Response) => {
 }
 
 const allApprovedUser = async (req: Request, res: Response) => {
-  console.log("PPPPPPPPPPPPPPP")
-  await userModel.find({}).then((data) => {
-    function customerData(b: any) {
-      console.log(b)
-      const a = b.emailVerified
-      return a == 1
-    }
-    const newcustomer = data.filter(customerData);
-    console.log(">>>>>>>>", newcustomer)
-    if (newcustomer) {
-      res.status(200).send(newcustomer)
+
+  const result = await userModel.find({ $or: [{ $and:[{ status: "active" },{is_Admin:false}]}, {$and:[{ status: "disable" },{is_Admin:false}]}] })
+   
+
+    if (result) {
+      res.status(200).send(result)
     }
     else {
-      console.log('user Does Not Exits');
+      res.status(404).send({msg:"no data found"});
     }
-  })
-
 }
 
-const userActivate_DeActivate_Controller = async (req: Request, res: Response, next: NextFunction) => {
+const userActivateDeActivateController = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.body.id
-  console.log(req.body)
+
   const result = await userModel.findById({ _id: id })
 
-  console.log("no", result)
+
   if (!result) {
     res.status(404).send("user not found")
   }
@@ -221,30 +226,32 @@ const userActivate_DeActivate_Controller = async (req: Request, res: Response, n
 }
 
 const adminData = async (req: Request, res: Response) => {
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>>", req.body.email)
 
-  const email  = req.body.email
+
+  const email = req.body.email
   console.log(email)
   // const data=JSON.parse(email);
-  userModel.findOne({ email:email }, (err: any, result: any) => {
-    if (err) {
-      console.log("errrrrrrrrrr admin",err)
-    }
+ const result = await userModel.findOne({ email: email })
+  
     if (result) {
-      res.status(200).send(result)
+      const { _id,name, roles } = result
+      res.status(200).send({_id: _id, name: name, roles: roles})
     }
-  })
-}
+    else{
+      res.status(404).send({msg:"data not found"})
+    }
+  }
+
 
 
 export {
-  SignIn,
+  signin,
   signup,
   verifyUserEmail,
   verifyByOrganization,
   newCustomerApplication,
   allApprovedUser,
   adminData,
-  userActivate_DeActivate_Controller
-  // signupVarifycation
+  userActivateDeActivateController
+
 };
