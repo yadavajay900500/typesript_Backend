@@ -7,10 +7,10 @@ const resultValidator = (req: Request, res: Response, next: NextFunction) => {
 
     if (hasErrors) {
         const errorList: any = result.array()?.map((obj) => {
-            console.log("Error in validation", `${obj.msg}`)
+            
             return `Eorror in Validation----> ${obj.msg} `;
         });
-        // res.status:(Number) = 400;
+
         res.status(401).send({ validatorError: errorList })
 
         next(errorList);

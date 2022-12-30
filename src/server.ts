@@ -54,10 +54,10 @@ function routesConfig() {
 
 function globalErrorHandler() {
     server.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-        // const errorStatus = req.status || 500;
+         const errorStatus:any = res.status || 500;
         const error = err.message && [err.message] || err || "Internal Server Error";
-        console.log("Global_Error_Handler", error)
-        res.status(500).send({ error: "Global Error Handler" })
+    
+        res.status(errorStatus).send(error)
     })
 }
 

@@ -1,22 +1,27 @@
 import { Router } from "express";
-import { addToDoListAdd, addToDoListRemove, addToDoListUpdate,getAlltasks } from "../Controllers/userToDoList.controller";
+import { addToDoListAdd, addToDoListRemove, addToDoListUpdate,getAllTasks } from "../Controllers/userToDoList.controller";
 const toDoListRouter = Router();
 
 
 (()=>{
 
-    postRequest();
+    postRequests();
     getRequests();
+    patchRequests();
 })();
 
-function postRequest(){
+function postRequests(){
     toDoListRouter.post("/add",addToDoListAdd);
     toDoListRouter.post("/remove",addToDoListRemove);
-    toDoListRouter.patch("/update",addToDoListUpdate);
+    
 }
 
 function getRequests(){
-    toDoListRouter.get("/getTask",getAlltasks)
+    toDoListRouter.get("/getTask",getAllTasks)
+}
+
+function patchRequests(){
+    toDoListRouter.patch("/update",addToDoListUpdate);
 }
 
 

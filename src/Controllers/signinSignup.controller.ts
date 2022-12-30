@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import userModel from '../Models/signinSigup.model';
 import { generateToken, refreshToken } from '../Utility/token';
 import { sendMailTo, sendMailwhenPending, sendMailWhenRejected } from "../Utility/nodeMailer.utilty";
+import verifyRefreshToken from '../Utility/verifyRefreshToken';
 const saltRounds: number = 2;
 
 const signup = async (req: Request, res: Response) => {
@@ -46,7 +47,7 @@ const signin = async (req: Request, res: Response) => {
 
     const result = await userModel.findOne({ email: email })
 
-    // console.log(".............................................",hashPassword)
+  
     if (result) {
       const hashPassword = result?.password as string
       const roles = result?.roles
@@ -54,12 +55,14 @@ const signin = async (req: Request, res: Response) => {
 
       const match_pass = await bcrypt.compare(req.body.password, hashPassword)
       if (match_pass) {
+        const refToken: string = refreshToken({ email }, `${60 * 60 * 24}s`)
+        const userData = userModel.findOneAndUpdate({ email: email }, { refreshToken: refToken })
         const TOKEN: string = generateToken({ email, roles }, `${60 * 15}s`)
 
         res.status(200).send({
           msg: "User logIn Successfull", userData: {
             TOKEN: TOKEN,
-
+            refreshToken: refToken
 
           }
         })
@@ -75,11 +78,31 @@ const signin = async (req: Request, res: Response) => {
     }
   }
 
+
+
+  const refreshTokenLogin = async (req: Request, res: Response) => {
+    try {
+      const { jwtToken, refreshToken } = req.body
+      const verifyTokenRes: any = await verifyRefreshToken(refreshToken, jwtToken)
+      const { email, password, roles } = verifyTokenRes
+      const refreshTokenData = verifyTokenRes.refreshToken
+      const TOKEN: string = generateToken({ email, roles }, `${60 * 15}s`)
+      res.status(201).send({
+        msg: "User logIn Successfull", userData: {
+          TOKEN: TOKEN,
+          refreshToken: refreshTokenData
+        }
+      })
+    } catch (err) {
+      
+      res.status(404).send("Something Wrong")
+    }
+  }
  
 
 const verifyUserEmail = async (req: Request, res: Response, next: NextFunction) => {
 
-  // const data:string = req.query.token as string;
+  
   const { data } = req.body.token
 
   const result = await userModel.findOne({ email: data })
@@ -217,7 +240,7 @@ const adminData = async (req: Request, res: Response) => {
 
   const email = req.body.email
   console.log(email)
-  // const data=JSON.parse(email);
+
  const result = await userModel.findOne({ email: email })
   
     if (result) {
@@ -239,6 +262,7 @@ export {
   newCustomerApplication,
   allApprovedUser,
   adminData,
-  userActivateDeActivateController
+  userActivateDeActivateController,
+  refreshTokenLogin
 
 };

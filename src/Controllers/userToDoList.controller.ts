@@ -4,7 +4,7 @@ import userModel from '../Models/signinSigup.model';
 
 
 
-const getAlltasks = async(req: Request, res: Response, next: NextFunction) =>{
+const getAllTasks = async(req: Request, res: Response, next: NextFunction) =>{
     
          const email = req.query.email
          const result = await userModel.find({email:email})
@@ -89,4 +89,4 @@ const addToDoListUpdate = async(req: Request, res: Response, next: NextFunction)
 
 
 
-export { addToDoListAdd, addToDoListUpdate, addToDoListRemove,getAlltasks }
+export { addToDoListAdd, addToDoListUpdate, addToDoListRemove,getAllTasks }

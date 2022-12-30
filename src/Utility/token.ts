@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 
 
 
-const secret:string =  "All_is_Well"
+const secret:string = process.env.secret_key as string
 const generateToken = (data: any, expiresIn = "1d",) => {
-    return jwt.sign({ data }, `All_is_Well`, { expiresIn });
+    return jwt.sign({ data }, secret, { expiresIn });
   };
 
   const refreshToken=(data:any,expiresIn="1d")=>{

@@ -15,15 +15,15 @@ interface IUser extends Document {
     action: {
         status: {
            type:string,
-           //default:[],
+           
         },
         statusBy: {
            type: string,
-           //default: [],
+           
         },
         role: {
            type: string,
-           //   required:true,
+           
   
         }
      },
@@ -82,15 +82,15 @@ const User: Schema = new mongoose.Schema({
     action: {
         status: {
            type: String,
-           //default:[],
+           
         },
         statusBy: {
            type: String,
-           //default: [],
+        
         },
         role: {
            type: String,
-           //   required:true,
+           
   
         }
      },
