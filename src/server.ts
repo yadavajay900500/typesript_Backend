@@ -6,7 +6,6 @@ import * as dotenv from 'dotenv';
 dotenv.config()
 import express, { Express, Response, Request, NextFunction } from "express";
 import SignInSignUpRoute from "../src/Routes/signinSignup.router"
-import addToDoList from "../src/Routes/userToDoList.router"
 import mongoose from 'mongoose';
 import cors from 'cors'
 import toDoListRouter from "../src/Routes/userToDoList.router";
@@ -40,7 +39,6 @@ function dbConfig() {
 
 function bodyParsar() {
     server.use(express.json());
-    // for parsing application/xwww-form-urlencoded
     server.use(express.urlencoded({ extended: true }))
 }
 function corsConfig() {
