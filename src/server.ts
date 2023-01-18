@@ -4,6 +4,7 @@ import addToDoList from "../src/Routes/userToDoList.router"
 import mongoose from 'mongoose';
 import cors from 'cors'
 import toDoListRouter from "../src/Routes/userToDoList.router";
+import awsPresignedUrl from "../src/Routes/awsPresignedUrl.router"
 
 const server: Express = express();
 
@@ -45,6 +46,7 @@ function cors_config() {
 function routes_config() {
     server.use('/', SignInSignUpRoute);
     server.use('/', toDoListRouter);
+    server.use('/', awsPresignedUrl);
 }
 
 function global_Error_Handler() {

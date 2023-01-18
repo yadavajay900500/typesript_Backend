@@ -1,28 +1,36 @@
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
+import { nextTick } from "process";
 import userModel from '../Models/signinSigup.model';
 
-const secret:string =  "All_is_Well"
+const secret: string = "All_is_Well"
 
 
-const verifyRefreshToken = (refreshToken: string) => {
-	const privateKey = process.env.REFRESH_TOKEN_PRIVATE_KEY;
 
-	return new Promise((resolve, reject) => {
-		userModel.findOne({ token: refreshToken }, (_err: any, doc: any) => {
-			if (!doc)
-				return reject({ error: true, message: "Invalid refresh token" });
+const verifyRefreshToken = async (refreshTokenFrontend: string, jwtToken: string) => {
 
-			jwt.verify(refreshToken, secret, (err: any, tokenDetails: any) => {
-				if (err)
-					return reject({ error: true, message: "Invalid refresh token" });
-				resolve({
-					tokenDetails,
-					error: false,
-					message: "Valid refresh token",
-				});
-			});
-		});
-	});
-};
 
+	try {
+		const decodedRefreshToken = jwt.verify(refreshTokenFrontend, secret)
+		if (decodedRefreshToken) {
+		
+			try {
+				const decodedAccessToken = jwt.verify(jwtToken, secret)
+			} catch (err) {
+				const { email } = decodedRefreshToken.data
+				const userData = await userModel.findOne({ email: email })
+				const { refreshToken } = userData
+				if (refreshToken === refreshTokenFrontend) {
+					const { email, password, roles, refreshToken } = userData
+					return {
+						email, password, roles, refreshToken
+					}
+				}
+			}
+		}
+
+
+	} catch (err) {
+		return { message: 'Unauthorized! Refresh Token was expired!' };
+	}
+}
 export default verifyRefreshToken;

@@ -9,10 +9,8 @@ const getAlltasks = async(req: Request, res: Response, next: NextFunction) =>{
          const email = req.query.email
          const result = await userModel.find({email:email})
          if(result){
-            // console.log("result1111111111111111111111111111111",result[0].toDaData)
             res.status(200).send(result[0].toDaData)
          }
-
      }
     catch(err){
         res.status(404).send(err)
@@ -24,15 +22,13 @@ const getAlltasks = async(req: Request, res: Response, next: NextFunction) =>{
 
 const addToDoListAdd = async(req: Request, res: Response, next: NextFunction) => {
     try {
-        // console.log("++++++++++++++++",req.body)
+        
         const { email, work} = req.body
-        console.log(req.body.work)
          userModel.findOneAndUpdate({email:email},
             { "$push": { "toDaData": req.body.work} },
             { "new": true, "upsert": true },
             function (err, result) {
                 if (err) throw err;
-                // console.log("))))))))))))))))))))",result);
                 res.status(200).send(result)
             }
         );
@@ -66,14 +62,12 @@ const addToDoListAdd = async(req: Request, res: Response, next: NextFunction) =>
 
 const addToDoListRemove = (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body)
         const { email, toDaData,index} = req.body
-        // console.log(req.body.toDaData)
         userModel.findOneAndUpdate({email:email},
             { "$pull": { "toDaData": req.body.toDaData} },
             function (err:any, result:any) {
                 if (err) throw err;
-                // console.log("))))))))))))))))))))",result);
+               
                 res.status(200).send(result)
             }
         );
@@ -111,7 +105,7 @@ const addToDoListRemove = (req: Request, res: Response, next: NextFunction) => {
 const addToDoListUpdate = async(req: Request, res: Response, next: NextFunction) => {
     try{
         const { email, toDaData,index} = req.body
-        console.log("inside update",req.body)
+        // console.log("inside update",req.body)
        
         const result = await userModel.find({ email:req.body.email}) 
         console.log("id result",result[0]._id)
@@ -123,8 +117,8 @@ const addToDoListUpdate = async(req: Request, res: Response, next: NextFunction)
               result[0].toDaData.splice(resu,1,toDaData)
              
                 }
-                console.log("btao",result[0].toDaData)
-                //  toDoList.push(req.body.toDaData)
+                // console.log("btao",result[0].toDaData)
+               
             const finalResult = await userModel.findByIdAndUpdate(result[0]._id,{toDaData:result[0].toDaData},{new:true})
                  console.log("finalResult")
                 res.status(200).send(finalResult);

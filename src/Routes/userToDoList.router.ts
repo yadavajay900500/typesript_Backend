@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as todoList from "../Controllers/todoList"
 import { addToDoListAdd, addToDoListRemove, addToDoListUpdate,getAlltasks } from "../Controllers/userToDoList.controller";
 const toDoListRouter = Router();
 
@@ -17,6 +18,7 @@ function postRequest(){
 
 function getRequests(){
     toDoListRouter.get("/getTask",getAlltasks)
+    // toDoListRouter.get("/getTask",todoList.)
 }
 
 
