@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
+import responses from "../Helper/responses.helper";
 import userModel from '../Models/signinSigup.model';
 import { generateToken, refreshToken } from '../Utility/token';
 import { sendMailTo, sendMailwhenPending, sendMailWhenRejected } from "../Utility/nodeMailer.utilty";
@@ -238,7 +239,12 @@ const verifyByOrganization = async (req: Request, res: Response, next: NextFunct
 
   switch (status) {
     case "Approved":
-      res.status(200).send({ msg: "Account Approved" });
+      const emailStatus = await sendMailTo(
+                  ["rajendrayadav900500@gmail.com"],
+                  "Aaaa"
+                );
+      let responseObj = { msg: "Account Approved" }
+      res.send(responses[200](responseObj));
       break;
     case "Pending":
       res.status(202).send({ msg: "Account Pending" })
@@ -293,29 +299,41 @@ const verifyByOrganization = async (req: Request, res: Response, next: NextFunct
 // }
 
 
+// const newCustomerApplication = async (req: Request, res: Response) => {
+//   try {
+//     await userModel.find({}).then((data) => {
+//       function customerData(b: any) {
+//         const a = b.emailVerified
+//         return a == 1;
+//       }
+//       const newcustomer = data.filter(customerData);
+//       if (newcustomer) {
+//         res.status(200).send({ data: newcustomer })
+//       }
+//     })
+
+//   } catch (err) {
+//     console.log(err)
+//     res.status(403).send("User Does not Exits")
+//   }
+// }
+
+// *************************get new all customer Application ***************//
 const newCustomerApplication = async (req: Request, res: Response) => {
-  console.log("///////dsknckdkcnksdnc/////", req.body)
-
   try {
-    await userModel.find({}).then((data) => {
-      function customerData(b: any) {
-        const a = b.emailVerified
-        return a == 1;
-      }
-      const newcustomer = data.filter(customerData);
-      if (newcustomer) {
-        res.status(200).send({ data: newcustomer })
-      }
-    })
-
+    const newCustomerData=await userModel.find({$and:[{emailVerified:{$eq:1}}]},{password:false})
+    console.log(newCustomerData)
+    res.status(200).send({ data: newCustomerData })
   } catch (err) {
     console.log(err)
-    res.status(403).send("User Does not Exits")
+    res.status(401).end()
   }
 }
 
+
+
 const allApprovedUser = async (req: Request, res: Response) => {
-  console.log("////////////", req.body)
+  // console.log("////////////", req.body)
   await userModel.find({}).then((data) => {
     function customerData(b: any) {
       const a = b.emailVerified

@@ -87,11 +87,11 @@ const transporter = nodemailer.createTransport({
     secure: false, 
     auth: {
         type:'OAuth2',
-        user:'jitendra7518888@gmail.com',
-        clientId :'630668604540-9gelb99035e2urd5mkogu2iifomhg3li.apps.googleusercontent.com',
-        clientSecret : "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",
-        refreshToken: "1//04bmWrNIaPU56CgYIARAAGAQSNwF-L9IrxreOeS8ifU-IiyluREGH9ZSgfR2saeO1ZjXuo-ukCpXrFLSafpKFfNmxyq5dNQxHqf4",
-        accessToken:'ya29.a0AX9GBdWdhUkUE0ZMJI_uEoZeibG0bEnutXMz66MC4zssw-7Cxe8LLfJS0yvv-wQM3wd-tiekvVGRHbc1pYatkJR-e53Nvrlq3P0uxFMdZM6cxephByT2bRfEGKlFtNSeuo-RnTKbjSdWuAF9oXsnkB4R8o0waCgYKAeUSARASFQHUCsbCctypKwCViyXiLUaw3GBRuQ0163',
+        user:'yadavajay900500@gmail.com',
+        clientId :'434313587437-o18cmi86e2m9in0pkiiqa5gt5o7copp9.apps.googleusercontent.com',
+        clientSecret : "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",
+        refreshToken:   "1//04iwqQUvEXyE2CgYIARAAGAQSNwF-L9IrVWmW1jINCWxB9Onz8Z0kQrPYbyJQrBsGPTEMUf3S2x69WKGHoSHDVVLF-w6vXvZgCoI",
+        accessToken:"ya29.a0AVvZVsrs9VcXAGLZm7AHnYjrr4FirSe7_jIqs4ivlKc5yTezcLMZt-kFBc3c_OfaTmSI2W-tr5q1dKRF_z3skq0ByQOIM7qf76XRv5jWCYM_6xnxphF6vLm_UG00HaF9P8lGgzTTjKRs95NTHOx6iecOnW3uaCgYKAeoSARESFQGbdwaIjRWfhLmoxlkpDBnJbY3NNg0163",
 
     }, 
 })
@@ -115,7 +115,7 @@ const transporter = nodemailer.createTransport({
 const sendMailTo = async (emailsArr: string[], link: string) => {
     var email = {
         to: emailsArr,
-        from: 'jitendra7518888@gmail.com', //registered Email on sendgrid
+        from: 'yadavajay900500@gmail.com', //registered Email on sendgrid
         subject: 'Verify Account',
         text: 'Account Authantication',
         html: `<div style=background-color:blue; height:400px;width:300px>

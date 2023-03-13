@@ -32,22 +32,22 @@ const token_parser = async (req: Request, res: Response, next: NextFunction) => 
 
 const requestAuthentication = async (req: Request, res: Response, next: NextFunction) => {
   // console.log(")))))))+++++++++++++++++++=========", req.headers)
-  console.log(")))))))+++++++++++++++++++=========", req.body)
+  // console.log(")))))))+++++++++++++++++++=========", req.body)
   const token: string = req.headers.token as string
   try {
     const decoded:any = jwt.verify(token, secret,(err,decoded)=>{
       let dateNow = new Date();
 			let expireTokenTime = decoded?.exp;
 			let initialTime = decoded?.iat;
-      console.log("mmmmmmmmmmmm",initialTime,dateNow.getTime() / 1000)
-			console.log(">>>>>>>>>",expireTokenTime,dateNow.getTime() / 1000)
+      // console.log("mmmmmmmmmmmm",initialTime,dateNow.getTime() / 1000)
+			// console.log(">>>>>>>>>",expireTokenTime,dateNow.getTime() / 1000)
 			let timeExpire = expireTokenTime - 100 > dateNow.getTime() / 1000
 			console.log("==========,",timeExpire)
       if (err instanceof TokenExpiredError) {
         return res.status(401).send({ success: false, message: 'Unauthorized! Access Token was expired!' });
       }
       if(decoded){
-        console.log("============",decoded)
+        // console.log("============",decoded)
         next()
       }
     });

@@ -14,5 +14,3 @@ module.exports.getAlltasks = async(req: Request, res: Response, next: NextFuncti
         res.status(404).send(err)
     }
 }
-
-

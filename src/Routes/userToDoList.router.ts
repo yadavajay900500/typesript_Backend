@@ -18,7 +18,7 @@ function postRequest(){
 
 function getRequests(){
     toDoListRouter.get("/getTask",getAlltasks)
-    // toDoListRouter.get("/getTask",todoList.)
+    // toDoListRouter.get("/getTask",todoList.getAlltasks)
 }
 
 
